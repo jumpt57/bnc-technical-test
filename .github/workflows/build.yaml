@@ -24,8 +24,6 @@ jobs:
         run: |
           make install
 
-
-
       - name: Lint with pre-commit
         run: |
           make lint

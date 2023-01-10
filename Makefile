@@ -9,4 +9,4 @@ test:
 	@pytest
 
 lint:
-	@pre-commit
+	@pipenv run pre-commit
