@@ -7,3 +7,6 @@ install:
 
 test:
 	@pytest
+
+lint:
+	@pre-commit
