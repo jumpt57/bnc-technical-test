@@ -7,8 +7,8 @@ from os.path import isfile, join
 def get_data_files(regex: str = "") -> list[str]:
     compiled_regex = re.compile(regex)
 
-    os.chdir("../dataDropArea")
-    path = os.getcwd()
+    current_dir = os.path.abspath(os.path.dirname(__file__))
+    path = join(current_dir, "../dataDropArea")
 
     return [
         file
