@@ -1,4 +1,6 @@
-# Interview Project 1
+# BNC Technical test
+
+## Goal of the program
 
 Design and code a program that standardizes a given file into a quoted csv format. The program will meet the following criterias:
 
@@ -14,7 +16,7 @@ Design and code a program that standardizes a given file into a quoted csv forma
 - The entrypoint of the program should be `standardize.py`
 
 
-## Setup project
+## Setup your local environment
 
 First of all start by install python on MacOS using brew, you can get it [here](https://brew.sh).
 
@@ -34,6 +36,14 @@ Source either `.bashrc` or `.zshrc`.
 ```
 $ pip install --user pipx
 $ pipx install pipenv
+```
+
+## Run application
+
+Install dependencies with :
+
+```
+$ make install
 ```
 
 
