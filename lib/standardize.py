@@ -3,7 +3,6 @@ import re
 from os import listdir
 from os.path import isfile, join
 from pathlib import Path
-from types import NoneType
 
 import yaml
 
@@ -11,7 +10,7 @@ import yaml
 def get_data_files(regex: str = "") -> list[str]:
     compiled_regex = re.compile(regex)
 
-    current_dir = os.path.abspath(os.path.dirname(__file__))
+    current_dir = get_current_folder()
     path = join(current_dir, "../dataDropArea")
 
     files = [
@@ -27,7 +26,19 @@ def get_data_files(regex: str = "") -> list[str]:
 
 
 def get_conf_file(file_name: str) -> dict:
-    current_dir = os.path.abspath(os.path.dirname(__file__))
+    current_dir = get_current_folder()
     path = join(current_dir, "../param", file_name)
 
     return yaml.safe_load(Path(path).read_text())
+
+
+def read_file_content(file_name: str) -> list[str]:
+    current_dir = get_current_folder()
+    path = join(current_dir, "../dataDropArea", file_name)
+
+    with open(path) as f:
+        return [line.strip() for line in f.readlines()]
+
+
+def get_current_folder():
+    return os.path.abspath(os.path.dirname(__file__))

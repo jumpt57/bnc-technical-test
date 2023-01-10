@@ -1,6 +1,6 @@
 import pytest
 
-from standardize import get_data_files, get_conf_file
+from standardize import get_data_files, get_conf_file, read_file_content
 
 
 def test_loop_through_files_in_data_drop_area_directory_without_regex():
@@ -31,3 +31,24 @@ def test_read_conf_file():
 def test_error_read_conf_file():
     with pytest.raises(FileNotFoundError):
         get_conf_file("test")
+
+
+def test_open_file_based_on_name():
+    file_content = read_file_content("file_test_1_20200101.csv")
+
+    assert file_content == [
+        "This,is,a,test,20200101",
+        "This,is,a,test,20200101",
+        "This,is,a,test,20200101",
+        "This,is,a,test,20200101",
+        "This,is,a,test,20200101",
+        "This,is,a,test,20200101",
+        "This,is,a,test,20200101",
+        "This,is,a,test,20200101",
+        "This,is,a,test,20200101",
+    ]
+
+
+def test_error_open_file_based_on_name():
+    with pytest.raises(FileNotFoundError):
+        read_file_content("test")
