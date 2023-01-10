@@ -24,6 +24,10 @@ jobs:
         run: |
           make install
 
+      - name: Lint with pre-commit
+        run: |
+          make lint
+
       - name: Test with pytest
         run: |
           make test
