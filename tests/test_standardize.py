@@ -1,6 +1,8 @@
+import tempfile
+
 import pytest
 
-from standardize import get_data_files, get_conf_file, read_file_content
+from standardize import get_data_files, get_conf_file, format_csv
 
 
 def test_loop_through_files_in_data_drop_area_directory_without_regex():
@@ -33,22 +35,11 @@ def test_error_read_conf_file():
         get_conf_file("test")
 
 
-def test_open_file_based_on_name():
-    file_content = read_file_content("file_test_1_20200101.csv")
+def test_format_csv():
+    with tempfile.NamedTemporaryFile(mode="w+") as input_tmp:
+        input_tmp.write("This,is,a,test,20200101")
+        input_tmp.seek(0)
 
-    assert file_content == [
-        "This,is,a,test,20200101",
-        "This,is,a,test,20200101",
-        "This,is,a,test,20200101",
-        "This,is,a,test,20200101",
-        "This,is,a,test,20200101",
-        "This,is,a,test,20200101",
-        "This,is,a,test,20200101",
-        "This,is,a,test,20200101",
-        "This,is,a,test,20200101",
-    ]
+        formatted = format_csv(input_tmp.name, ",", 5)
 
-
-def test_error_open_file_based_on_name():
-    with pytest.raises(FileNotFoundError):
-        read_file_content("test")
+        assert formatted == "'This','is','a','test','20200101'\n"

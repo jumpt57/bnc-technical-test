@@ -1,10 +1,30 @@
+import csv
 import os
 import re
 from os import listdir
 from os.path import isfile, join
 from pathlib import Path
 
+import pandas
 import yaml
+
+
+class CsvFileColumnError(ValueError):
+    pass
+
+
+def format_csv(input_file_name: str, input_separator: str, column_count: int) -> str:
+    with open(input_file_name, "r") as f:
+        df = pandas.read_csv(f, sep=input_separator)
+
+        if len(df.columns) != column_count:
+            raise CsvFileColumnError(
+                f"Expected row count is {column_count} got {len(df.columns)}"
+            )
+
+        return df.to_csv(
+            None, sep=",", quotechar="'", quoting=csv.QUOTE_NONNUMERIC, index=False
+        )
 
 
 def get_data_files(regex: str = "") -> list[str]:
@@ -30,14 +50,6 @@ def get_conf_file(file_name: str) -> dict:
     path = join(current_dir, "../param", file_name)
 
     return yaml.safe_load(Path(path).read_text())
-
-
-def read_file_content(file_name: str) -> list[str]:
-    current_dir = get_current_folder()
-    path = join(current_dir, "../dataDropArea", file_name)
-
-    with open(path) as f:
-        return [line.strip() for line in f.readlines()]
 
 
 def get_current_folder():
