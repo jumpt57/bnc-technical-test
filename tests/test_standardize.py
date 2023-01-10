@@ -1,2 +1,7 @@
-def test_loop_thourght_files_in_data_drop_area_diretory():
-    assert 3 == 3
+from standardize import get_data_files
+
+
+def test_loop_through_files_in_data_drop_area_directory():
+    files = get_data_files()
+
+    assert len(files) == 3
