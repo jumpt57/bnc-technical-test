@@ -26,3 +26,8 @@ def test_read_conf_file():
         "file_test_2_[0-9]{8}.csv": {"delimiter": ";", "column_count": 4},
         "file_test_3_[0-9]{8}.csv": {"delimiter": "|", "column_count": 4},
     }
+
+
+def test_error_read_conf_file():
+    with pytest.raises(FileNotFoundError):
+        get_conf_file("test")
