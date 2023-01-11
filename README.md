@@ -2,10 +2,12 @@
 
 ## Goal of the program
 
-Design and code a program that standardizes a given file into a quoted csv format. The program will meet the following criterias:
+Design and code a program that standardizes a given file into a quoted csv format. The program will meet the following
+criterias:
 
 - It will loop through files in the 'dataDropArea' directory to process all the files.
-- It will use a configuration file as a YAML in order to pick up different parameters. The parameters should take into account:
+- It will use a configuration file as a YAML in order to pick up different parameters. The parameters should take into
+  account:
     - File name Regex
     - Delimiter Used
 - You can find a config example in `param/config.yaml`
@@ -15,6 +17,16 @@ Design and code a program that standardizes a given file into a quoted csv forma
 - The program has to be unit tested.
 - The entrypoint of the program should be `standardize.py`
 
+## Available commands
+
+| Name                | Description                                        |
+|---------------------|----------------------------------------------------|
+| run                 | Will run the program with the default config file  |
+| install             | Will install all necessary libraries               |
+| test                | Will launch all the tests                          |
+| test-cov            | Will generate a coverage repport in the terminal   |
+| lint                | Will lint and correct formating issues in the code |
+| export-requirements | Will freeze all dependencies of the project        |
 
 ## Setup your local environment
 
@@ -24,7 +36,7 @@ First of all start by install python on MacOS using brew, you can get it [here](
 $ brew install python3
 ```
 
-Add python and globally installed packages to your path : 
+Add python and globally installed packages to your path :
 
 ```
 export PATH="$HOME/Library/Python/3.10/bin:$PATH"
@@ -38,12 +50,14 @@ $ pip install --user pipx
 $ pipx install pipenv
 ```
 
-## Run application
+You can also install pipenv with pip directly :
 
-Install dependencies with :
+```
+$ pip install pipenv
+```
+
+Then when pipenv is installed, install the project dependencies with :
 
 ```
 $ make install
 ```
-
-
