@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import csv
 import logging
 import os
@@ -6,6 +7,7 @@ from os import listdir
 from os.path import isfile, join, abspath
 from pathlib import Path
 from types import NoneType
+import click
 
 import pandas
 import yaml
@@ -15,19 +17,22 @@ class ParserError(pandas.errors.ParserError):
     pass
 
 
+@click.command()
+@click.argument("param", default="config.yaml")
+def standardize(param: str):
+    for file in traverse_and_format(param):
+        click.echo(file)
+
+
 def traverse_and_format(config_file_name: str):
     config = get_conf_file(config_file_name)
 
     def process_csv(pattern: str) -> list[str]:
         delimiter = config[pattern]["delimiter"]
-        column_count = config[pattern]["column_count"]
         file_names = get_data_files(pattern)
 
         try:
-            return [
-                format_csv(file_name, delimiter, column_count)
-                for file_name in file_names
-            ]
+            return [format_csv(file_name, delimiter) for file_name in file_names]
         except ValueError as e:
             logging.warning(str(e))
             return []
@@ -40,7 +45,7 @@ def traverse_and_format(config_file_name: str):
     return out
 
 
-def format_csv(input_file_name: str, delimiter: str, column_count: int) -> str:
+def format_csv(input_file_name: str, delimiter: str) -> str:
     with open(input_file_name, "r") as f:
 
         try:
@@ -84,3 +89,7 @@ def get_conf_file(file_name: str) -> dict:
 
 def get_current_folder():
     return os.path.abspath(os.path.dirname(__file__))
+
+
+if __name__ == "__main__":
+    standardize()

@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 pyyaml = "*"
 pandas = "*"
+click = "*"
 
 [dev-packages]
 pre-commit = "*"

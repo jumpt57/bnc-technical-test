@@ -51,14 +51,14 @@ def test_format_csv():
         input_tmp.write("This,is,a,test,20200101")
         input_tmp.seek(0)
 
-        formatted = format_csv(input_tmp.name, ",", 5)
+        formatted = format_csv(input_tmp.name, ",")
 
         assert formatted == "'This','is','a','test','20200101'\n"
 
 
 def test_error_format_csv():
     with pytest.raises(FileNotFoundError):
-        format_csv("test", ",", 5)
+        format_csv("test", ",")
 
 
 def test_error_format_csv_columns():
@@ -78,7 +78,7 @@ def test_error_format_csv_columns():
             )
             input_tmp.seek(0)
 
-            format_csv(input_tmp.name, "|", 4)
+            format_csv(input_tmp.name, "|")
 
 
 def test_traverse_and_format():
