@@ -2,7 +2,7 @@ import tempfile
 
 import pytest
 
-from standardize import get_data_files, get_conf_file, format_csv
+from standardize import get_data_files, get_conf_file, format_csv, CsvFileColumnError
 
 
 def test_loop_through_files_in_data_drop_area_directory_without_regex():
@@ -43,3 +43,17 @@ def test_format_csv():
         formatted = format_csv(input_tmp.name, ",", 5)
 
         assert formatted == "'This','is','a','test','20200101'\n"
+
+
+def test_error_format_csv():
+    with pytest.raises(FileNotFoundError):
+        format_csv("test", ",", 5)
+
+
+def test_error_format_csv_columns():
+    with pytest.raises(CsvFileColumnError):
+        with tempfile.NamedTemporaryFile(mode="w+") as input_tmp:
+            input_tmp.write("This,is,a,test,20200101")
+            input_tmp.seek(0)
+
+            format_csv(input_tmp.name, ",", 4)
