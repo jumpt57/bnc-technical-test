@@ -28,6 +28,24 @@ criterias:
 | lint                | Will lint and correct formating issues in the code |
 | export-requirements | Will freeze all dependencies of the project        |
 
+
+## Run the application
+To run the application it is very simple :
+
+```
+$ make run
+```
+
+You we will prompted with 2 choices :
+- The name of the configuration file, default is config.yaml
+- To dump the result of the standardization to a file or only print it to the terminal, default is false.
+
+## Configuration
+
+They are two types of files :
+- config: is a YAML where the key is a regex of file name with two attributes (delimiter and column_count), must be located in the folder param.
+- data: is a csv file to standardize, must be located in the folder dataDropArea.
+
 ## Setup your local environment
 
 First of all start by install python on MacOS using brew, you can get it [here](https://brew.sh).
@@ -61,3 +79,9 @@ Then when pipenv is installed, install the project dependencies with :
 ```
 $ make install
 ```
+
+## Limit of the solution
+
+- Dates are not handled
+- If a separator is added in the middle it is not processed as one string
+- Might add `.0` at the end of some integers

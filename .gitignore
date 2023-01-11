@@ -128,3 +128,6 @@ dmypy.json
 
 # Intellij
 .idea/
+
+# Csv files
+*_standardize.csv

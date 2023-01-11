@@ -18,13 +18,16 @@ class ParserError(pandas.errors.ParserError):
 
 
 @click.command()
-@click.argument("param", default="config.yaml")
-def standardize(param: str):
-    for file in traverse_and_format(param):
+@click.option("--p", "param", prompt="The configuration file", default="config.yaml")
+@click.option(
+    "--d", "dump", prompt="Dump to files or print in terminal ?", default=False
+)
+def standardize(param: str, dump: bool):
+    for file in traverse_and_format(param, dump):
         click.echo(file)
 
 
-def traverse_and_format(config_file_name: str) -> list[str]:
+def traverse_and_format(config_file_name: str, dump_to_file: bool = False) -> list[str]:
     config = get_conf_file(config_file_name)
 
     def process_csv(pattern: str) -> list[str]:
@@ -32,32 +35,48 @@ def traverse_and_format(config_file_name: str) -> list[str]:
         file_names = get_data_files(pattern)
 
         try:
-            return [format_csv(file_name, delimiter) for file_name in file_names]
+            return [
+                format_csv(file_name, delimiter, dump_to_file)
+                for file_name in file_names
+            ]
         except ValueError as e:
             logging.warning(str(e))
             return []
 
     out = []
     for file_name_pattern in config:
-        for processed_csv in process_csv(file_name_pattern):
-            out.append(processed_csv)
+        for process_output in process_csv(file_name_pattern):
+            out.append(process_output)
 
     return out
 
 
-def format_csv(input_file_name: str, delimiter: str) -> str:
+def format_csv(input_file_name: str, delimiter: str, dump_to_file: bool = False) -> str:
     with open(input_file_name, "r") as f:
 
         try:
-            df = pandas.read_csv(f, sep=delimiter)
+            data_frame = pandas.read_csv(f, sep=delimiter)
         except pandas.errors.ParserError as e:
             raise ParserError(
                 f"Error occurred for file {input_file_name} caused by {str(e)}"
             )
 
-        return df.to_csv(
-            None, sep=",", quotechar="'", quoting=csv.QUOTE_NONNUMERIC, index=False
-        )
+        logging.info("dump_to_file", dump_to_file)
+
+        if dump_to_file:
+            output_file_name = f"{input_file_name.split('.csv')[0]}_standardize.csv"
+            data_frame.to_csv(
+                output_file_name,
+                sep=",",
+                quotechar="'",
+                quoting=csv.QUOTE_NONNUMERIC,
+                index=False,
+            )
+            return f"CSV file was dumped has {output_file_name}"
+        else:
+            return data_frame.to_csv(
+                None, sep=",", quotechar="'", quoting=csv.QUOTE_NONNUMERIC, index=False
+            )
 
 
 def get_data_files(regex: str = "") -> list[str]:
