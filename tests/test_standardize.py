@@ -17,9 +17,7 @@ def test_loop_through_files_in_data_drop_area_directory_without_regex():
 
     assert len(files) == 6
 
-    to_find = re.compile(
-        ".*/repositories/bnc-technical-test/dataDropArea/file_test_1_20200101.csv"
-    )
+    to_find = re.compile(".*/dataDropArea/file_test_1_20200101.csv")
     assert list(filter(to_find.match, files))
 
 
