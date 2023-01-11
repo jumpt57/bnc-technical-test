@@ -24,7 +24,7 @@ def standardize(param: str):
         click.echo(file)
 
 
-def traverse_and_format(config_file_name: str):
+def traverse_and_format(config_file_name: str) -> list[str]:
     config = get_conf_file(config_file_name)
 
     def process_csv(pattern: str) -> list[str]:
