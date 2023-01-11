@@ -1,25 +1,53 @@
 import csv
+import logging
 import os
 import re
 from os import listdir
-from os.path import isfile, join
+from os.path import isfile, join, abspath
 from pathlib import Path
+from types import NoneType
 
 import pandas
 import yaml
 
 
-class CsvFileColumnError(ValueError):
+class ParserError(pandas.errors.ParserError):
     pass
 
 
-def format_csv(input_file_name: str, input_separator: str, column_count: int) -> str:
-    with open(input_file_name, "r") as f:
-        df = pandas.read_csv(f, sep=input_separator)
+def traverse_and_format(config_file_name: str):
+    config = get_conf_file(config_file_name)
 
-        if len(df.columns) != column_count:
-            raise CsvFileColumnError(
-                f"Expected row count is {column_count} got {len(df.columns)}"
+    def process_csv(pattern: str) -> list[str]:
+        delimiter = config[pattern]["delimiter"]
+        column_count = config[pattern]["column_count"]
+        file_names = get_data_files(pattern)
+
+        try:
+            return [
+                format_csv(file_name, delimiter, column_count)
+                for file_name in file_names
+            ]
+        except ValueError as e:
+            logging.warning(str(e))
+            return []
+
+    out = []
+    for file_name_pattern in config:
+        for processed_csv in process_csv(file_name_pattern):
+            out.append(processed_csv)
+
+    return out
+
+
+def format_csv(input_file_name: str, delimiter: str, column_count: int) -> str:
+    with open(input_file_name, "r") as f:
+
+        try:
+            df = pandas.read_csv(f, sep=delimiter)
+        except pandas.errors.ParserError as e:
+            raise ParserError(
+                f"Error occurred for file {input_file_name} caused by {str(e)}"
             )
 
         return df.to_csv(
@@ -34,12 +62,14 @@ def get_data_files(regex: str = "") -> list[str]:
     path = join(current_dir, "../dataDropArea")
 
     files = [
-        file
+        abspath(join(path, file))
         for file in listdir(path)
         if isfile(join(path, file)) and compiled_regex.match(file)
     ]
 
-    if len(files) == 0:
+    files.sort()
+
+    if files is None or files is NoneType or len(files) == 0:
         raise FileNotFoundError(f"It was not possible to find files with regex {regex}")
 
     return files
@@ -47,7 +77,7 @@ def get_data_files(regex: str = "") -> list[str]:
 
 def get_conf_file(file_name: str) -> dict:
     current_dir = get_current_folder()
-    path = join(current_dir, "../param", file_name)
+    path = abspath(join(current_dir, "../param", file_name))
 
     return yaml.safe_load(Path(path).read_text())
 

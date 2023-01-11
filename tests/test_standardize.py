@@ -2,12 +2,23 @@ import tempfile
 
 import pytest
 
-from standardize import get_data_files, get_conf_file, format_csv, CsvFileColumnError
+from standardize import (
+    get_data_files,
+    get_conf_file,
+    format_csv,
+    traverse_and_format,
+    ParserError,
+)
 
 
 def test_loop_through_files_in_data_drop_area_directory_without_regex():
     files = get_data_files()
+
     assert len(files) == 6
+    assert (
+        "/Users/julienmaupetit/repositories/bnc-technical-test/dataDropArea/file_test_1_20200101.csv"
+        in files
+    )
 
 
 def test_loop_through_files_in_data_drop_area_directory_with_regex():
@@ -51,9 +62,26 @@ def test_error_format_csv():
 
 
 def test_error_format_csv_columns():
-    with pytest.raises(CsvFileColumnError):
+    with pytest.raises(ParserError):
         with tempfile.NamedTemporaryFile(mode="w+") as input_tmp:
-            input_tmp.write("This,is,a,test,20200101")
+            input_tmp.write(
+                """Another|test|file|date
+            This|is|test|20200520
+            This|is||est|20200520
+            This|is|test|20200520
+            This|is|test|20200520
+            This|is|test|20200520
+            This|is|te,t|20200520
+            This|is|test|20200520
+            This|is|test data again|20200520
+            """
+            )
             input_tmp.seek(0)
 
-            format_csv(input_tmp.name, ",", 4)
+            format_csv(input_tmp.name, "|", 4)
+
+
+def test_traverse_and_format():
+    formatted_csv = traverse_and_format("config.yaml")
+
+    assert len(formatted_csv) == 5
