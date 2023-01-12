@@ -1,5 +1,14 @@
 # BNC Technical test
 
+## Summary
+
+1. Goal of the program
+2. Available commands
+3. Run the application 
+4. Configuration
+5. Setup your local environment
+6. Limit of the solution
+
 ## Goal of the program
 
 Design and code a program that standardizes a given file into a quoted csv format. The program will meet the following
@@ -21,10 +30,10 @@ criterias:
 
 | Name                | Description                                        |
 |---------------------|----------------------------------------------------|
-| run                 | Will run the program with the default config file  |
+| run                 | Will run the program with the two promps           |
 | install             | Will install all necessary libraries               |
 | test                | Will launch all the tests                          |
-| test-cov            | Will generate a coverage repport in the terminal   |
+| test-cov            | Will generate a coverage report in the terminal    |
 | lint                | Will lint and correct formating issues in the code |
 | export-requirements | Will freeze all dependencies of the project        |
 
@@ -63,6 +72,8 @@ export PATH="$HOME/.local/bin:$PATH"
 
 Source either `.bashrc` or `.zshrc`.
 
+Then install pipenv with pipx :
+
 ```
 $ pip install --user pipx
 $ pipx install pipenv
@@ -83,5 +94,6 @@ $ make install
 ## Limit of the solution
 
 - Dates are not handled
-- If a separator is added in the middle it is not processed as one string
+- Some integeres are handled as strings 
+- If a rogue separator is added in the middle of a column it is processed as one string and it will add any missing column
 - Might add `.0` at the end of some integers
